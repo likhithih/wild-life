@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Bubbles = () => {
   const bubbleCount = 20; // more bubbles
@@ -49,6 +50,10 @@ const images = [
 
 const Login = () => {
   const [current, setCurrent] = useState(0);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -57,8 +62,30 @@ const Login = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        navigate('/');
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError('An error occurred during login');
+    }
+  };
+
   return (
-    <div className="relative lg:min-h-screen flex flex-col lg:flex-row items-center justify-center p-6 bg-gradient-to-br from-green-100 via-emerald-50 to-yellow-50 overflow-hidden">
+    <div className="relative lg:min-h-screen flex flex-col lg:flex-row items-center justify-center p-6 bg-linear-to-br from-green-100 via-emerald-50 to-yellow-50 overflow-hidden">
       <Bubbles />
 
       {/* Left Section - Text & Carousel */}
@@ -95,12 +122,13 @@ const Login = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent"></div>
         </div>
       </motion.div>
 
       {/* Right Section - Login Form */}
       <motion.form
+        onSubmit={handleSubmit}
         className="max-w-md lg:ml-auto w-full bg-white/80 backdrop-blur-sm shadow-2xl p-8 rounded-2xl mt-10 lg:mt-0 z-10"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
@@ -110,6 +138,8 @@ const Login = () => {
           Safari Login
         </h2>
 
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
         <div className="space-y-6">
           <div>
             <label className="text-sm text-green-900 font-medium mb-2 block">
@@ -118,6 +148,8 @@ const Login = () => {
             <input
               type="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-green-50 w-full text-sm text-green-900 px-4 py-3 rounded-md outline-0 border border-green-200 focus:border-green-600 focus:bg-white transition"
               placeholder="Enter your email"
             />
@@ -129,6 +161,8 @@ const Login = () => {
             <input
               type="password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-green-50 w-full text-sm text-green-900 px-4 py-3 rounded-md outline-0 border border-green-200 focus:border-green-600 focus:bg-white transition"
               placeholder="Enter your password"
             />
@@ -145,7 +179,7 @@ const Login = () => {
         </div>
 
         <motion.button
-          type="button"
+          type="submit"
           className="w-full mt-8 py-3 text-white font-medium bg-green-700 hover:bg-green-800 rounded-md shadow-lg transition-transform hover:scale-105"
           whileTap={{ scale: 0.95 }}
         >

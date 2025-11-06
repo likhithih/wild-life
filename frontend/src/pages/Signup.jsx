@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   {
@@ -11,7 +12,7 @@ const steps = [
   },
   {
     title: "Create an account",
-    field: { label: "Full Name", name: "name", placeholder: "Enter your name", type: "text" },
+    field: { label: "Full Name", name: "userName", placeholder: "Enter your name", type: "text" },
     image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80",
   },
   {
@@ -60,6 +61,8 @@ const Bubbles = ({ step }) => {
 
 const Signup = () => {
   const [step, setStep] = useState(0);
+  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const navigate = useNavigate();
 
   const nextStep = () => {
     if (step < steps.length - 1) setStep(step + 1);
@@ -69,10 +72,32 @@ const Signup = () => {
     if (step > 0) setStep(step - 1);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:5000/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        navigate('/login');
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred during signup');
+    }
+  };
+
   const current = steps[step];
 
   return (
-    <div className="md:h-screen p-4 relative bg-gradient-to-br from-green-50 via-emerald-50 to-yellow-50 overflow-hidden">
+    <div className="md:h-screen p-4 relative bg-linear-to-br from-green-50 via-emerald-50 to-yellow-50 overflow-hidden">
       {/* Floating bubbles */}
       <Bubbles step={step} />
 
@@ -131,9 +156,11 @@ const Signup = () => {
                     </label>
                     <div className="relative flex items-center">
                       <input
-                        name={current.field.name}
+                        name={current.field.userName}
                         type={current.field.type}
                         required
+                        value={formData[current.field.name]}
+                        onChange={(e) => setFormData({ ...formData, [current.field.name]: e.target.value })}
                         className="w-full bg-transparent text-sm text-slate-900 border-2 border-green-200 focus:border-green-600 pl-4 pr-12 py-3.5 outline-0 rounded-xl transition-all"
                         placeholder={current.field.placeholder}
                       />
@@ -166,7 +193,8 @@ const Signup = () => {
                   </motion.button>
                 ) : (
                   <motion.button
-                    type="submit"
+                    type="button"
+                    onClick={handleSubmit}
                     className="shadow-xl py-2.5 px-6 text-base font-medium tracking-wide rounded-xl bg-green-600 hover:bg-green-700 text-white cursor-pointer focus:outline-0 transition-all"
                     whileTap={{ scale: 0.95 }}
                   >
