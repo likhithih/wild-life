@@ -5,28 +5,7 @@ const HeroSection = () => {
   return (
     <div className="bg-green-900 text-white">
       {/* Navbar */}
-      <nav className="flex justify-between items-center py-6 px-8 bg-green-950 bg-opacity-70 backdrop-blur-md sticky top-0 z-50">
-        <div className="flex items-center space-x-2 text-2xl font-bold">
-          <FaPaw className="text-yellow-400" />
-          <span>WildLifeStay</span>
-        </div>
-        <div className="hidden md:flex space-x-8 text-lg">
-          {["Home", "Safaris", "Resorts", "Gallery", "Contact"].map(
-            (item, i) => (
-              <a
-                key={i}
-                href={`#${item.toLowerCase()}`}
-                className="hover:text-yellow-400 transition-all duration-300"
-              >
-                {item}
-              </a>
-            )
-          )}
-        </div>
-        <button className="bg-yellow-400 text-green-950 px-5 py-2 rounded-full font-semibold hover:bg-yellow-500 transition-all duration-300">
-          Book Now
-        </button>
-      </nav>
+      
 
       {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center text-center px-6 py-24 md:py-36 bg-cover bg-center"
