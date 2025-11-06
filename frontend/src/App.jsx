@@ -5,6 +5,7 @@ import './App.css'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Content from './components/Content'
+import Home from './pages/Home'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,7 +14,8 @@ function App() {
   <>
   {/* <Login/> */}
   {/* <Signup/> */}
-  <Content/>
+  {/* <Content/> */}
+  <Home/>
   </>
   )
 }
