@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Bubbles = () => {
   const bubbleCount = 20; // more bubbles
@@ -66,21 +67,16 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        navigate('/');
-      } else {
-        setError(data.message);
+      const response = await axios.post('http://localhost:5000/login', { email, password });
+      if (response.status === 200) {
+        navigate('/home');
       }
     } catch (error) {
-      setError('An error occurred during login');
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('An error occurred during login');
+      }
     }
   };
 
@@ -105,9 +101,9 @@ const Login = () => {
           </p>
           <p className="text-[15px] text-green-700">
             Don’t have an account?
-            <a href="#" className="text-green-900 font-semibold hover:underline ml-1">
+            <Link to="/signup" className="text-green-900 font-semibold hover:underline ml-1">
               Register here
-            </a>
+            </Link >
           </p>
         </div>
 

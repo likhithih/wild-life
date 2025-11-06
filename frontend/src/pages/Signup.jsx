@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const steps = [
   {
@@ -75,22 +76,16 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      if (response.ok) {
+      const response = await axios.post('http://localhost:5000/signup', formData);
+      if (response.status === 200) {
         navigate('/login');
-      } else {
-        alert(data.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred during signup');
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('An error occurred during signup');
+      }
     }
   };
 
