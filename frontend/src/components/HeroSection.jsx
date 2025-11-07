@@ -1,20 +1,22 @@
 import React from "react";
 import { FaLeaf, FaPaw, FaTree, FaMapMarkedAlt } from "react-icons/fa";
+import waterfallVideo from "../assets/Safari_video/Waterfall_video (1).mp4";
 
 const HeroSection = () => {
   return (
     <div className="bg-green-900 text-white">
       {/* Navbar */}
-      
 
       {/* Hero Section */}
-      <section className="relative flex flex-col items-center justify-center text-center px-6 py-24 md:py-36 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1544986581-efac024faf62?auto=format&fit=crop&w=2000&q=80')",
-        }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      <section className="relative flex flex-col items-center justify-center text-center px-6 py-24 md:py-36">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={waterfallVideo}
+          autoPlay
+          loop
+          muted
+        ></video>
+        <div className="absolute inset-0  bg-opacity-50"></div>
         <div className="relative z-10 max-w-3xl">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-yellow-400 drop-shadow-lg">
             Explore the Wild, Stay in Comfort
