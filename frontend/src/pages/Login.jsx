@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 import axios from "axios";
 
 const Bubbles = () => {
@@ -67,7 +69,9 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/login', { email, password });
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await userCredential.user.getIdToken();
+      const response = await axios.post('http://localhost:5000/login', { idToken });
       if (response.status === 200) {
         navigate('/home');
       }
@@ -76,6 +80,25 @@ const Login = () => {
         setError(error.response.data.message);
       } else {
         setError('An error occurred during login');
+      }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError('');
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
+      const response = await axios.post('http://localhost:5000/login', { idToken });
+      if (response.status === 200) {
+        navigate('/home');
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('An error occurred during Google login');
       }
     }
   };

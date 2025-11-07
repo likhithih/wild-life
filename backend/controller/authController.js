@@ -6,16 +6,14 @@ export const signup = async (req, res) => {
     console.log('Request body:', req.body);
     const { userName, email, password } = req.body;
 
-
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
     const newUser = new User({
@@ -49,7 +47,7 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Return success with user data (excluding password)
+    // Return success with user data
     res.status(200).json({
       message: 'Login successful',
       user: {
